@@ -60,7 +60,7 @@ pro combspec::combine,spec,noredraw=noredraw
               wframe = where(framearr[wnodup[ii],*] eq 1, cwframe)
               if cwframe ne 1 then stop,'oops something is wrong'
               spec.spec[wnodup[ii]] = specarr[wnodup[ii],wframe]
-              spec.ivar[wnodup[ii]] = ivarr[wnodup[ii],wframe]
+              spec.ivar[wnodup[ii]] = ivararr[wnodup[ii],wframe]
               spec.sky[wnodup[ii]] = skyarr[wnodup[ii],wframe]
            endfor
        endif
@@ -711,8 +711,8 @@ function combspec::INIT, directory=directory
     wdefaultvheliobase = widget_base(windivbase,/row,/align_center)
     wdefaultvhelio = widget_button(wdefaultvheliobase,value='Reset Vhelio',uvalue='default_vhelio',uname='default_vhelio',tab_mode=1,xsize=120)
     wincludebase = widget_base(wleft, /row, /align_center,/frame)
-    wincluderadio = cw_bgroup(wincludebase,['0','1','2','3','4','5','6'],/column,/nonexclusive,set_value=[1,1,1,1,1,1,1],uname='include',uvalue='include',label_top='include')
-    wplotconradio = cw_bgroup(wincludebase,['0','1','2','3','4','5','6'],/column,/exclusive,set_value=0,uname='iplotcont',uvalue='iplotcont',label_top='plot')
+    wincluderadio = cw_bgroup(wincludebase,strtrim(string(indgen(ndup)),2),/column,/nonexclusive,set_value=bytarr(ndup)+1,uname='include',uvalue='include',label_top='include')
+    wplotconradio = cw_bgroup(wincludebase,strtrim(string(indgen(ndup)),2),/column,/exclusive,set_value=0,uname='iplotcont',uvalue='iplotcont',label_top='plot')
     wcurobj = widget_base(wleft, /column, /align_center, tab_mode=0, /frame)
     widbase = widget_base(wcurobj, /align_left, /row, xsize=235)
     widlabel = widget_label(widbase, value='object ID:', /align_right, uname='idlabel', xsize=65)
@@ -842,6 +842,7 @@ pro spec__define
 end
 
 pro combspec_dbsp,mask, inputlist
+;e.g. combspec_dbsp,'180406','bluelowmass052ms.list'
    common mask_in, mask_in, listfile
    common npixcom, npix,ndup
    mask_in = mask
